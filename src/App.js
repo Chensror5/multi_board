@@ -1,23 +1,94 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
 
 function App() {
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedCol, setSelectedCol] = useState(null);
+  const [answer, setAnswer] = useState("");
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [question, setQuestion] = useState(null);
+  const [answers, setAnswers] = useState(Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => "")));
+
+  const handleCellClick = (row, col) => {
+    setSelectedRow(row);
+    setSelectedCol(col);
+    setQuestion(`How much is ${row} x ${col}?`);
+    setAnswer("");
+    setShowAnswer(false);
+  };
+
+  const handleAnswerChange = (e) => {
+    setAnswer(e.target.value);
+  };
+
+  const handleCheckAnswer = () => {
+    if (parseInt(answer) === selectedRow * selectedCol) {
+      setShowAnswer(true);
+      setAnswers(prevAnswers => {
+        const newAnswers = [...prevAnswers];
+        newAnswers[selectedRow - 1][selectedCol - 1] = answer;
+        return newAnswers;
+      });
+      setQuestion(null);
+    } else {
+      alert("Incorrect! Please try again.");
+      setAnswer("");
+    }
+  };
+
+  const handleNewGame = () => {
+    setAnswers(Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => "")));
+  };
+
+  const renderCell = (row, col) => {
+    const isCellSelected = selectedRow === row && selectedCol === col;
+    const isSelectedClass = isCellSelected ? "selected" : "";
+    const cellValue = showAnswer && isCellSelected ? row * col : answers[row - 1][col - 1];
+
+    return (
+      <td
+        key={col}
+        className={`cell ${isSelectedClass}`}
+        onClick={() => handleCellClick(row, col)}
+      >
+        {cellValue}
+      </td>
+    );
+  };
+
+  const renderRow = (row) => {
+    return (
+      <tr key={row}>
+        <td className="cell header">{row}</td>
+        {Array.from({ length: 10 }, (_, col) => renderCell(row, col + 1))}
+      </tr>
+    );
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Multiplication Table</h1>
+      <table className="table">
+        <thead>
+          <tr>
+            <th className="cell header"></th>
+            {Array.from({ length: 10 }, (_, i) => (
+              <th key={i} className="cell header">
+                {i + 1}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>{Array.from({ length: 10 }, (_, i) => renderRow(i + 1))}</tbody>
+      </table>
+      {question && (
+        <div className="input-container">
+          <p>{question}</p>
+          <input type="number" value={answer} onChange={handleAnswerChange} />
+          <button onClick={handleCheckAnswer}>Check Answer</button>
+        </div>
+      )}
+      <button onClick={handleNewGame}>New Game</button>
     </div>
   );
 }
