@@ -12,7 +12,7 @@ function App() {
   const handleCellClick = (row, col) => {
     setSelectedRow(row);
     setSelectedCol(col);
-    setQuestion(`How much is ${row} x ${col}?`);
+    setQuestion(`$?{row} x ${col} כמה זה`);
     setAnswer("");
     setShowAnswer(false);
   };
