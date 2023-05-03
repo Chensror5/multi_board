@@ -67,7 +67,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Multiplication Table</h1>
+      <h1>לוח הכפל</h1>
       <table className="table">
         <thead>
           <tr>
