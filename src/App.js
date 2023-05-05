@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import "./App.css";
 
 function App() {
@@ -7,7 +7,16 @@ function App() {
   const [answer, setAnswer] = useState("");
   const [showAnswer, setShowAnswer] = useState(false);
   const [question, setQuestion] = useState(null);
-  const [answers, setAnswers] = useState(Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => "")));
+  const [answers, setAnswers] = useState(
+  JSON.parse(localStorage.getItem("answers")) ||
+      Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => ""))
+  );
+
+  useEffect(() => {
+  localStorage.setItem("answers", JSON.stringify(answers));
+  }, [answers]);
+
+
 
   const handleCellClick = (row, col) => {
     setSelectedRow(row);
